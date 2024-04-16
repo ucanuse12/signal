@@ -1,36 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: docker-python-demo
+  name: django-demo
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: django
+      service: django-app
   template:
     metadata:
       labels:
-        service: django
+        service: django-app
     spec:
       containers:
-       - name: django-service
-         image: ucanuse/signal
+       - name: signals
+         image: signals-server
          imagePullPolicy: Always
-        #  env:
-        #   - name: POSTGRES_PASSWORD
-        #     value: mysecretpassword
+         env:
+          - name: POSTGRES_PASSWORD
+            value: mysecretpassword
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-entrypoint
+  name: django-service-entrypoint
   namespace: default
 spec:
   type: NodePort
   selector:
-    service: django
+    app: django-app
   ports:
-  - port: 8000
+  - port: 5432
     targetPort: 8000
-    nodePort: 30001
+    nodePort: 30004
